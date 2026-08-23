@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>רכיבת מבחן FACTOR ALUTO | Recycles</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #e31b36;
+      --orange-hover: #c9152e;
+      --text: #111111;
+      --muted: #666666;
+      --border: #e0e0e0;
+      --bg: #ffffff;
+      --surface: #f7f7f7;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      direction: rtl;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── LOGO BAR ── */
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+    .logo-bar img {
+      height: 92px;
+      max-width: min(72vw, 280px);
+      object-fit: contain;
+    }
+
+    .privacy-link {
+      color: var(--text);
+      font-weight: 800;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color .2s;
+    }
+    .privacy-link:hover { color: var(--orange); }
+
+    /* ── VIDEO HERO ── */
+    .video-hero {
+      position: relative;
+      width: 100%;
+      height: 900px;
+      height: clamp(400px, 100vh, 900px);
+      height: clamp(400px, 100dvh, 900px);
+      background: #111;
+      overflow: hidden;
+    }
+
+    .desktop-hero-video,
+    .mobile-hero-video {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 100%;
+      height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      border: 0;
+      object-fit: cover;
+    }
+
+    .desktop-hero-video {
+      display: block;
+    }
+
+    .mobile-hero-video {
+      display: none;
+    }
+
+    /* Fallback placeholder shown when no video ID */
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a4a2e 0%, #0d2b1a 100%);
+      color: rgba(255,255,255,.55);
+      font-size: 15px;
+      gap: 12px;
+      text-align: center;
+    }
+    .video-placeholder svg { opacity: .4; }
+
+    .video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,.1) 0%, rgba(0,0,0,.45) 100%);
+      z-index: 1;
+      display: flex;
+      align-items: flex-end;
+      padding: 40px 48px;
+    }
+
+    .video-title {
+      color: #fff;
+      font-size: clamp(28px, 5vw, 56px);
+      font-weight: 900;
+      line-height: 1.1;
+      text-shadow: 0 2px 20px rgba(0,0,0,.5);
+    }
+    .video-title span {
+      color: var(--orange);
+    }
+
+    /* ── FORM SECTION ── */
+    .form-section {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .form-top {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .form-top h2 {
+      font-size: 30px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .form-top p {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    .divider-line {
+      width: 48px;
+      height: 4px;
+      background: var(--orange);
+      border-radius: 4px;
+      margin: 16px auto 0;
+    }
+
+    /* ── INPUTS ── */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .form-group { margin-bottom: 14px; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 14px 18px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      font-family: 'Heebo', sans-serif;
+      text-align: right;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    input::placeholder { color: #aaa; }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(234,109,0,.12);
+    }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: left 16px center;
+      background-color: #fff;
+      padding-left: 40px;
+    }
+    select option { background: #fff; color: #111; }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    /* ── CHECKBOXES ── */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .checkbox-item:hover { border-color: var(--orange); }
+
+    .checkbox-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      accent-color: var(--orange);
+      cursor: pointer;
+      margin-top: 2px;
+      border-radius: 4px;
+    }
+    .checkbox-item label {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.55;
+      cursor: pointer;
+    }
+
+    /* ── SUBMIT ── */
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 22px;
+      font-weight: 900;
+      font-family: 'Heebo', sans-serif;
+      cursor: pointer;
+      transition: background .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(234,109,0,.25);
+    }
+    .submit-btn:hover {
+      background: var(--orange-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(234,109,0,.35);
+    }
+    .submit-btn:active { transform: translateY(0); }
+
+    /* ── SUCCESS ── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .success-msg .check {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    .success-msg h3 {
+      font-size: 28px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+    .success-msg p {
+      font-size: 16px;
+      color: var(--muted);
+    }
+
+    /* ── SIGNUP + BIKE SECTION ── */
+    .bikes-section {
+      background: #f4f4f4;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 58px 24px 68px;
+    }
+
+    .bikes-section-title {
+      text-align: center;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 34px;
+      letter-spacing: -0.5px;
+    }
+    .bikes-section-title span { color: var(--orange); }
+    .bikes-section-title .title-line {
+      display: block;
+    }
+    .bikes-section-title .title-line:first-child {
+      color: var(--text);
+    }
+
+    .signup-layout {
+      display: grid;
+      grid-template-columns: minmax(560px, 1.35fr) minmax(280px, .65fr);
+      grid-template-areas: "form bike";
+      gap: 22px;
+      max-width: 1180px;
+      margin: 0 auto;
+      direction: ltr;
+      align-items: start;
+    }
+
+    .form-panel {
+      grid-area: form;
+      direction: rtl;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.06);
+    }
+
+    .bike-panel {
+      grid-area: bike;
+      direction: rtl;
+    }
+
+    .bike-mobile-title {
+      display: none;
+    }
+
+    .bike-card {
+      background: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+      transition: box-shadow .25s, transform .25s;
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: start;
+      height: auto;
+      align-self: start;
+    }
+    .bike-card:hover {
+      box-shadow: 0 12px 48px rgba(0,0,0,.12);
+      transform: translateY(-5px);
+    }
+
+    /* Photo area */
+    .bike-photo {
+      width: 100%;
+      height: 198px;
+      min-height: 0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 16px 4px;
+      overflow: hidden;
+    }
+    .bike-photo img {
+      max-width: 100%;
+      max-height: 190px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform .4s ease;
+    }
+    .bike-card:hover .bike-photo img { transform: scale(1.04); }
+
+    .gravel-ph img {
+      max-width: 108%;
+      max-height: 108%;
+      transform: scale(1.14);
+    }
+    .bike-card:hover .gravel-ph img { transform: scale(1.18); }
+
+    .bike-photo.gravel-ph { background: #ffffff; }
+
+    /* Info block */
+    .bike-info {
+      padding: 10px 18px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .bike-brand-tag {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .bike-brand-tag img {
+      height: 14px;
+      width: auto;
+      display: inline-block;
+      object-fit: contain;
+    }
+    .bike-name {
+      font-size: clamp(21px, 1.9vw, 28px);
+      font-weight: 900;
+      color: var(--text);
+      line-height: 1.05;
+      margin-bottom: 0;
+      direction: ltr;
+      text-align: center;
+      unicode-bidi: isolate;
+      white-space: nowrap;
+      letter-spacing: 0;
+    }
+    /* Specs row */
+    .bike-specs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid var(--border);
+      grid-column: 1 / -1;
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 106px;
+      padding: 13px 10px 15px;
+      gap: 6px;
+      border-right: 1px solid var(--border);
+      border-bottom: none;
+      text-align: center;
+    }
+    .spec-item:first-child { border-right: none; }
+    .spec-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #111;
+      margin-bottom: 4px;
+    }
+    .spec-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      mix-blend-mode: multiply;
+    }
+    .spec-value {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.35;
+      direction: rtl;
+      unicode-bidi: isolate;
+    }
+    .spec-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    @media (max-width: 680px) {
+      .signup-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "form"
+          "bike";
+      }
+      .form-panel {
+        padding: 26px 18px;
+      }
+      .form-top {
+        text-align: center;
+      }
+      .bikes-section-title {
+        font-size: clamp(19px, 5.8vw, 24px);
+        white-space: nowrap;
+        margin-bottom: 26px;
+      }
+      .bike-mobile-title {
+        display: block;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 900;
+        margin: 10px 0 18px;
+        color: var(--text);
+      }
+      .bike-card { grid-template-columns: 1fr; }
+      .bike-photo {
+        aspect-ratio: 16 / 10;
+        min-height: 0;
+        height: auto;
+        padding: 20px;
+      }
+      .bike-photo img {
+        max-height: 100%;
+      }
+      .gravel-ph img {
+        max-width: 104%;
+        max-height: 104%;
+        transform: scale(1.06);
+      }
+      .bike-info { padding: 24px 22px 20px; }
+      .bike-name {
+        white-space: normal;
+        font-size: clamp(30px, 8vw, 40px);
+      }
+      .bike-specs { grid-template-columns: 1fr; }
+      .spec-item {
+        min-height: 0;
+        padding: 22px 18px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .spec-item:last-child { border-bottom: none; }
+      .spec-icon {
+        width: 68px;
+        height: 68px;
+      }
+    }
+
+    /* ── STORES ── */
+    .stores-section {
+      background: #fff;
+      border-top: 1px solid var(--border);
+      padding: 58px 0 64px;
+      overflow: hidden;
+    }
+    .stores-title {
+      text-align: center;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 32px;
+    }
+    .stores-title span { color: var(--orange); }
+    .stores-carousel {
+      position: relative;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 64px;
+    }
+    .stores-track {
+      display: flex;
+      gap: 22px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      direction: ltr;
+      padding: 8px 2px 18px;
+      scrollbar-width: none;
+    }
+    .stores-track::-webkit-scrollbar { display: none; }
+    .store-item {
+      flex: 0 0 170px;
+      min-height: 138px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      direction: rtl;
+      scroll-snap-align: center;
+    }
+    .store-logo-wrap {
+      width: 150px;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .store-logo-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .store-city {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      text-align: center;
+    }
+    .stores-arrow {
+      position: absolute;
+      top: 40px;
+      z-index: 2;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      box-shadow: 0 8px 28px rgba(0,0,0,.08);
+      font-size: 30px;
+      line-height: 1;
+      direction: ltr;
+      unicode-bidi: isolate;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .2s, border-color .2s;
+    }
+    .stores-arrow:hover {
+      transform: translateY(-1px);
+      border-color: var(--orange);
+    }
+    .stores-arrow.prev { left: 14px; }
+    .stores-arrow.next { right: 14px; }
+
+    @media (max-width: 680px) {
+      .stores-section { padding: 46px 0 54px; }
+      .stores-carousel { padding: 0 46px; }
+      .stores-arrow {
+        display: flex;
+        width: 36px;
+        height: 36px;
+        top: 38px;
+        font-size: 28px;
+      }
+      .stores-arrow.prev { left: 8px; }
+      .stores-arrow.next { right: 8px; }
+      .stores-track {
+        gap: 18px;
+        padding-inline: 6px;
+      }
+      .store-item { flex-basis: 142px; }
+      .store-logo-wrap {
+        width: 128px;
+        height: 72px;
+      }
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 28px;
+      font-size: 13px;
+      color: #bbb;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .form-row { grid-template-columns: 1fr; }
+      .video-hero {
+        height: 900px;
+        height: clamp(400px, 100vh, 900px);
+        height: clamp(400px, 100dvh, 900px);
+      }
+      .desktop-hero-video {
+        display: none;
+      }
+      .mobile-hero-video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+      }
+      .video-overlay { padding: 24px; }
+      .form-section { padding: 40px 16px 60px; }
+    }
+  </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-0P68P7BXVK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+
+  gtag("config", "G-0P68P7BXVK");
+</script>
+</head>
+<body>
+
+  <!-- ── LOGO ── -->
+  <div class="logo-bar">
+    <img src="recycles-logo-full.png" alt="Recycles - חנויות שהן רשת" />
+  </div>
+
+  <!-- ── VIDEO HERO ── -->
+  <div class="video-hero">
+
+    <video class="desktop-hero-video" autoplay muted loop playsinline preload="auto" aria-label="FACTOR ALUTO test ride desktop video">
+      <source src="aluto-hero-desktop.mp4" type="video/mp4" />
+    </video>
+
+    <video class="mobile-hero-video" autoplay muted loop playsinline preload="auto" aria-label="FACTOR ALUTO test ride mobile video">
+      <source src="aluto-hero-mobile.mp4" type="video/mp4" />
+    </video>
+
+    <!-- מוצג כל עוד אין וידאו תקין -->
+    <div class="video-placeholder" id="fallback"></div>
+
+    <div class="video-overlay">
+      <div class="video-title">
+        רכיבת מבחן גראבל<br>
+        <span>FACTOR ALUTO</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── BIKE + FORM ── -->
+  <section class="bikes-section">
+    <h2 class="bikes-section-title">
+      <span class="title-line">הרשמה לרכיבת מבחן</span>
+      <span class="title-line">FACTOR ALUTO</span>
+    </h2>
+    <div class="signup-layout">
+
+      <section class="form-panel form-section" aria-labelledby="signup-title">
+        <div class="form-top">
+          <h2 id="signup-title">הזמינו רכיבת מבחן</h2>
+          <p>אתם ממלאים פרטים, אנחנו דואגים לכל השאר</p>
+          <div class="divider-line"></div>
+        </div>
+
+        <form id="signup-form" name="aluto-test-ride" method="POST" action="/thank-you.html" data-netlify="true" data-netlify-honeypot="bot-field">
+          <input type="hidden" name="form-name" value="aluto-test-ride" />
+          <input type="hidden" name="bot-field" style="display:none" />
+
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" name="שם-פרטי" placeholder="שם פרטי*" required />
+            </div>
+            <div class="form-group">
+              <input type="text" name="שם-משפחה" placeholder="שם משפחה*" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="email" name="אימייל" placeholder="דואר אלקטרוני*" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <input type="tel" name="טלפון" placeholder="טלפון נייד*" inputmode="numeric" dir="rtl" required />
+            </div>
+            <div class="form-group">
+              <input type="text" name="עיר" placeholder="עיר מגורים*" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="number" name="גובה" placeholder="גובה בס&quot;מ (לצורך התאמת מידת האופניים)*" min="140" max="220" required />
+          </div>
+
+          <input type="hidden" name="דגם-מבוקש" value="FACTOR ALUTO" />
+
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input type="checkbox" name="אישור-דיוור" id="cb-marketing" value="מאשר" />
+              <span>אני מאשר/ת קבלת דיוור (פרטיך ישמשו אותנו ליצירת קשר בלבד ולא יועברו לצד שלישי)</span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" name="אישור-תנאים" id="cb-terms" value="מאשר" required />
+              <span>אני מאשר/ת שקראתי והסכמתי לתנאי השימוש ו<a class="privacy-link" href="https://www.recycles.co.il/%D7%9E%D7%93%D7%99%D7%A0%D7%99%D7%95%D7%AA_%D7%A4%D7%A8%D7%98%D7%99%D7%95%D7%AA" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות</a> *</span>
+            </label>
+          </div>
+
+          <button type="submit" class="submit-btn">הרשמה</button>
+
+        </form>
+
+        <!-- הודעת הצלחה -->
+        <div class="success-msg" id="success">
+          <div class="check">✅</div>
+          <h3>נרשמת בהצלחה!</h3>
+          <p>ניצור איתך קשר בקרוב לתיאום רכיבת המבחן.</p>
+        </div>
+      </section>
+
+      <div class="bike-panel">
+        <h3 class="bike-mobile-title">אופני המבחן שלנו</h3>
+        <div class="bike-card">
+          <div class="bike-photo gravel-ph">
+            <img src="aluto-bike.webp" alt="FACTOR ALUTO" onerror="this.style.display='none'" />
+          </div>
+          <div class="bike-info">
+            <div class="bike-brand-tag"><img src="factor.png" alt="FACTOR" /></div>
+            <div class="bike-name">ALUTO</div>
+          </div>
+          <div class="bike-specs">
+            <div class="spec-item">
+              <!-- שלדה -->
+              <div class="spec-icon"><img src="spec-frame-icon.png" alt="" /></div>
+              <div class="spec-value"><span class="spec-label">שלדה</span>Toray®, Nippon Graphite® Pan-Based Fiber</div>
+            </div>
+            <div class="spec-item">
+              <!-- מערכת הילוכים -->
+              <div class="spec-icon"><img src="spec-drivetrain-icon.webp" alt="" /></div>
+              <div class="spec-value"><span class="spec-label">מערכת הילוכים</span>Sram Force XPLR AXS 13s</div>
+            </div>
+            <div class="spec-item">
+              <!-- גלגלים -->
+              <div class="spec-icon spec-icon-wheel"><img src="spec-wheel-icon.svg" alt="" /></div>
+              <div class="spec-value"><span class="spec-label">גלגלים</span>Black Inc THIRTY FOUR</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ── STORES ── -->
+  <section class="stores-section" aria-labelledby="stores-title">
+    <h2 class="stores-title" id="stores-title">חנויות <span>Recycles</span></h2>
+
+    <div class="stores-carousel">
+      <button class="stores-arrow prev" type="button" data-stores-dir="prev" aria-label="חנויות קודמות">‹</button>
+
+      <div class="stores-track" id="stores-track">
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bikecare.png" alt="Bikecare" /></div>
+          <div class="store-city">הוד השרון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/tlat-ofan.png" alt="תלת אופן" /></div>
+          <div class="store-city">זיכרון יעקב</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/rimon-bikes.png" alt="רימון bikes" /></div>
+          <div class="store-city">גני יוחנן</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/one-bike-studio.png" alt="ONE Bike Studio" /></div>
+          <div class="store-city">תל אביב</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/einhorn.png" alt="Einhorn" /></div>
+          <div class="store-city">מודיעין</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ofanei-haemek.png" alt="אופני העמק" /></div>
+          <div class="store-city">עפולה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/two-bike.png" alt="טו בייק" /></div>
+          <div class="store-city">חיפה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bikers.png" alt="Bikers" /></div>
+          <div class="store-city">אליפלט</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ran-ofan.png" alt="רן אופן" /></div>
+          <div class="store-city">שבי ציון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bike-24-7.png" alt="Bike 24-7" /></div>
+          <div class="store-city">נתניה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bike-way.png" alt="Bike Way" /></div>
+          <div class="store-city">בארות יצחק</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bilu-bikes-jerusalem.png" alt="בילו בייקס ירושלים" /></div>
+          <div class="store-city">ירושלים</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bilu-bikes-kfar-etzion.png" alt="בילו בייקס כפר עציון" /></div>
+          <div class="store-city">כפר עציון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/air-bikes.png" alt="אייר אופניים מקצועיים" /></div>
+          <div class="store-city">אשדות יעקב איחוד</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/217.png" alt="217" /></div>
+          <div class="store-city">יד מרדכי</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ran-ofan.png" alt="רן אופן מעיליא" /></div>
+          <div class="store-city">מעיליא</div>
+        </div>
+      </div>
+
+      <button class="stores-arrow next" type="button" data-stores-dir="next" aria-label="חנויות נוספות">›</button>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <footer>© 2026 Recycles כל הזכויות שמורות</footer>
+
+
+<script>
+  // Hide fallback placeholder once the local hero video starts loading.
+  const fallback = document.getElementById('fallback');
+  document.querySelectorAll('.desktop-hero-video, .mobile-hero-video').forEach(function (video) {
+    video.addEventListener('loadeddata', function () {
+      fallback.style.display = 'none';
+    });
+  });
+
+  const form = document.getElementById('signup-form');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'שולח...';
+
+    try {
+      const formData = new FormData(form);
+
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString()
+      });
+
+      if (!response.ok) {
+        throw new Error('Netlify form submission failed');
+      }
+
+      try {
+        const activeTrailResponse = await fetch('/.netlify/functions/submit-to-activetrail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: formData.get('שם-פרטי'),
+            lastName: formData.get('שם-משפחה'),
+            email: formData.get('אימייל'),
+            phone: formData.get('טלפון'),
+            city: formData.get('עיר'),
+            height: formData.get('גובה'),
+            bikeModel: formData.get('דגם-מבוקש'),
+            marketingApproved: formData.has('אישור-דיוור'),
+            termsApproved: formData.has('אישור-תנאים')
+          })
+        });
+
+        if (!activeTrailResponse.ok) {
+          console.warn('ActiveTrail submission failed');
+        }
+      } catch (activeTrailError) {
+        console.warn('ActiveTrail submission failed', activeTrailError);
+      }
+
+      window.parent.location.href = new URL('thank-you.html', window.location.href).href;
+    } catch (error) {
+      submitButton.disabled = false;
+      submitButton.textContent = 'הרשמה';
+      alert('השליחה לא הצליחה. אפשר לנסות שוב בעוד רגע.');
+    }
+  });
+
+  const storesTrack = document.getElementById('stores-track');
+  document.querySelectorAll('[data-stores-dir]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!storesTrack) return;
+
+      const direction = button.dataset.storesDir === 'next' ? 1 : -1;
+      const distance = Math.min(520, storesTrack.clientWidth * 0.85);
+
+      storesTrack.scrollBy({
+        left: direction * distance,
+        behavior: 'smooth'
+      });
+    });
+  });
+</script>
+
+
+  <script>
+    (function () {
+      if (window.parent === window) return;
+
+      let lastHeight = 0;
+      let timer = null;
+
+      function getHeight() {
+        return Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        );
+      }
+
+      function sendHeight(force = false) {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+          const height = getHeight();
+
+          if (height < 100) return;
+          if (!force && height === lastHeight) return;
+
+          lastHeight = height;
+          window.parent.postMessage(
+            {
+              type: "update-iframe-height",
+              height: height
+            },
+            "*"
+          );
+        }, 50);
+      }
+
+      sendHeight(true);
+      window.addEventListener("load", () => sendHeight(true));
+      window.addEventListener("resize", () => sendHeight());
+
+      const observer = new ResizeObserver(() => {
+        sendHeight();
+      });
+
+      if (document.body) {
+        observer.observe(document.body);
+      } else {
+        window.addEventListener("DOMContentLoaded", function () {
+          observer.observe(document.body);
+        });
+      }
+
+      setTimeout(sendHeight, 200);
+      setTimeout(sendHeight, 1000);
+      setTimeout(sendHeight, 3000);
+    })();
+
+    document.addEventListener("click", function (e) {
+      const link = e.target.closest('a[href^="#"]');
+
+      if (!link) return;
+
+      const target = document.querySelector(link.hash);
+
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+
+      window.parent.postMessage(
+        {
+          type: "anchorClicked",
+          offset: rect.top + window.scrollY
+        },
+        "*"
+      );
+
+      e.preventDefault();
+    });
+  </script>
+
+</body>
+</html>
