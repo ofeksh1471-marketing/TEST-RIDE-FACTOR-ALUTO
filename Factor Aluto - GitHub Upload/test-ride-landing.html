@@ -826,6 +826,85 @@
   </section>
 
 
+  <!-- ── STORES ── -->
+  <section class="stores-section" aria-labelledby="stores-title">
+    <h2 class="stores-title" id="stores-title">חנויות <span>Recycles</span></h2>
+
+    <div class="stores-carousel">
+      <button class="stores-arrow prev" type="button" data-stores-dir="prev" aria-label="חנויות קודמות">‹</button>
+
+      <div class="stores-track" id="stores-track">
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bikecare.png" alt="Bikecare" /></div>
+          <div class="store-city">הוד השרון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/tlat-ofan.png" alt="תלת אופן" /></div>
+          <div class="store-city">זיכרון יעקב</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/rimon-bikes.png" alt="רימון bikes" /></div>
+          <div class="store-city">גני יוחנן</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/one-bike-studio.png" alt="ONE Bike Studio" /></div>
+          <div class="store-city">תל אביב</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/einhorn.png" alt="Einhorn" /></div>
+          <div class="store-city">מודיעין</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ofanei-haemek.png" alt="אופני העמק" /></div>
+          <div class="store-city">עפולה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/two-bike.png" alt="טו בייק" /></div>
+          <div class="store-city">חיפה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bikers.png" alt="Bikers" /></div>
+          <div class="store-city">אליפלט</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ran-ofan.png" alt="רן אופן" /></div>
+          <div class="store-city">שבי ציון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bike-24-7.png" alt="Bike 24-7" /></div>
+          <div class="store-city">נתניה</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bike-way.png" alt="Bike Way" /></div>
+          <div class="store-city">בארות יצחק</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bilu-bikes-jerusalem.png" alt="בילו בייקס ירושלים" /></div>
+          <div class="store-city">ירושלים</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/bilu-bikes-kfar-etzion.png" alt="בילו בייקס כפר עציון" /></div>
+          <div class="store-city">כפר עציון</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/air-bikes.png" alt="אייר אופניים מקצועיים" /></div>
+          <div class="store-city">אשדות יעקב איחוד</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/217.png" alt="217" /></div>
+          <div class="store-city">יד מרדכי</div>
+        </div>
+        <div class="store-item">
+          <div class="store-logo-wrap"><img src="store-logos/ran-ofan.png" alt="רן אופן מעיליא" /></div>
+          <div class="store-city">מעיליא</div>
+        </div>
+      </div>
+
+      <button class="stores-arrow next" type="button" data-stores-dir="next" aria-label="חנויות נוספות">›</button>
+    </div>
+  </section>
+
+
   <!-- ── FOOTER ── -->
   <footer>© 2026 Recycles כל הזכויות שמורות</footer>
 
@@ -896,6 +975,21 @@
       submitButton.textContent = 'הרשמה';
       alert('השליחה לא הצליחה. אפשר לנסות שוב בעוד רגע.');
     }
+  });
+
+  const storesTrack = document.getElementById('stores-track');
+  document.querySelectorAll('[data-stores-dir]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!storesTrack) return;
+
+      const direction = button.dataset.storesDir === 'next' ? 1 : -1;
+      const distance = Math.min(520, storesTrack.clientWidth * 0.85);
+
+      storesTrack.scrollBy({
+        left: direction * distance,
+        behavior: 'smooth'
+      });
+    });
   });
 
 </script>
