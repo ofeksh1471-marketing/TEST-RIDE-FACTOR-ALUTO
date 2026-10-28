@@ -18,76 +18,7 @@ exports.handler = async (event) => {
   const groupIdValue = String(process.env.ACTIVE_TRAIL_GROUP_ID || '236994').trim();
   const groupId = Number(groupIdValue);
 
-  const params = event.queryStringParameters || {};
   const bodyData = JSON.parse(event.body || '{}');
-  const debugMode = params.debug || bodyData.debug;
-
-  // debug=1: בדיקת גרופ בסיסית
-  if (debugMode === '1') {
-    const groupResponse = await fetch(`${ACTIVE_TRAIL_BASE_URL}/groups/${groupId}`, {
-      method: 'GET',
-      headers: { Authorization: token }
-    });
-    const groupResponseText = await groupResponse.text();
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        hasToken: Boolean(token),
-        tokenLength: token.length,
-        groupId,
-        groupCheckStatus: groupResponse.status,
-        groupCheckResponse: groupResponseText
-      })
-    };
-  }
-
-  // debug=2: בדיקת שלושת שיטות ה-auth מול import endpoint
-  if (debugMode === '2') {
-    const testPayload = {
-      group: groupId,
-      contacts: [{
-        contact: {
-          email: 'debugtest@test.com',
-          sms: '+972501234567',
-          first_name: 'Debug',
-          last_name: 'Test',
-          is_deleted: false
-        },
-        externalId: String(Date.now()),
-        externalName: 'RecyclesAlutoTestRide'
-      }]
-    };
-
-    const r1 = await fetch(`${ACTIVE_TRAIL_BASE_URL}/external/import`, {
-      method: 'POST',
-      headers: { Authorization: token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(testPayload)
-    });
-    const t1 = await r1.text();
-
-    const r2 = await fetch(`${ACTIVE_TRAIL_BASE_URL}/external/import`, {
-      method: 'POST',
-      headers: { AppIdToken: token, 'Content-Type': 'application/json' },
-      body: JSON.stringify(testPayload)
-    });
-    const t2 = await r2.text();
-
-    const r3 = await fetch(`${ACTIVE_TRAIL_BASE_URL}/external/import?Authorization=${token}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(testPayload)
-    });
-    const t3 = await r3.text();
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        attempt1_Authorization_header: { status: r1.status, response: t1 },
-        attempt2_AppIdToken_header: { status: r2.status, response: t2 },
-        attempt3_query_param: { status: r3.status, response: t3 }
-      }, null, 2)
-    };
-  }
 
   try {
     const data = bodyData;
